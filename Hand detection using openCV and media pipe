@@ -1,0 +1,75 @@
+# Is a computer vision technique used to identify and locate hands using image or video.
+# In AIML we use open cv for haarcascade classifier 
+# We will be working with the edges, lines, changle in the layout
+
+# We have seprate file for hand detection
+# applications (gesture recogination, sign language recogination, human computer interaction)
+# Mediapipe it is computer vision frame work developed by google that can detect and track 
+# hands in real life
+
+# we can use it in 2 ways palm detection and hand detection
+# we have coordinates and land marks through which we find the actual cordinates
+# application of mediapipe AR application, counting finger's, 
+
+
+# Wap to create finger counter using mediapipe 
+# camera detection - detect hands - find landmarks - set positions- count fingers - display the number
+'''
+import cv2 
+import mediapipe as mp
+'''
+# mediapipe will help in the hand detection and setting landmarks and coordinates 
+# cv2 will help in image proccesing, capturing camera and display output 
+'''
+hands=mp.solutions.hands.Hands(max_num_hands=1)
+'''
+# it will create a hand detection model 
+'''
+draw=mp.solutions.drawing_utils
+'''
+# this module draw hand points and lines between fingers 
+'''
+cap=cv2.VideoCapture(0) # using default web cam.
+while True:  # making a loop till the situation fails 
+    ret,img=cap.read()
+    img=cv2.flip(img,1)
+    RGB=cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+    result=hands.proccess(RGB)
+    count=0
+    if result.multi_hand_landmarks:
+        for hand in result.multi_hand_landmarks:
+            lm=hand.landmark
+            if lm[4].x>lm[3].x:
+                count=count+1 #Thumb
+            for tip,joint in[(8,6),(12,10),(16,14)(20,18)]:
+                if lm [tip].y>lm[joint].y:
+                    count=count+1 # 4 finger's
+            # draw landmarks
+            draw.draw_landmarks(img,hand,mp.solutions.hands.HAND_CONNECTIONS)
+    cv2.putText(img,"fingers"+str(count)(20,50),cv2.FONT_HERSHEY_SIMPLEX,1.5,(0,255,0),3)
+    cv2.imshow("finger counter",img)
+    if cv2.waitKey(1)& 0xff==ord('q'):
+        break
+cap.release()
+cv2.destroyAllWindows()
+'''
+import cv2 as cv
+import mediapipe as mp
+import time
+
+Cap = cv.VideoCapture(0)
+mphands = mp.solutions.hands
+hands = mphands.Hands()
+
+while True:
+    success, img = Cap.read()
+    imgRGB = cv.cvtColor(img,cv.COLOR_BGR2RGB)
+    results = hands.process(imgRGB)
+    #print(results.multi_hand_landmarks)
+
+    cv.imshow("Images",img)
+    if cv.waitKey(1) == ord("s"):
+        break
+
+cv.destroyAllWindows()
+Cap.release()
